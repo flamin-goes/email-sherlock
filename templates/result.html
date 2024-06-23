@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Sherlock</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1,
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+
+        p {
+            color: #333;
+        }
+
+        .spoofing {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .spoofing .spoofing-result {
+            font-weight: bold;
+            text-transform: uppercase;
+            padding: 8px;
+            border-radius: 4px;
+            width: 180px;
+            margin-top: 10px;
+        }
+
+        .spoofing .spoofing-result.true {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .spoofing .spoofing-result.false {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .image-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h1>Email Sherlock Results</h1>
+            </div>
+            <div class="card-body">
+                <div class="spoofing">
+                    {% if spoofing_detected %}
+                    <div class="spoofing-result true">Spoofing Detected!</div>
+                    {% else %}
+                    <div class="spoofing-result false">No Spoofing Detected.</div>
+                    {% endif %}
+                </div>
+
+                <h2>Basic Information</h2>
+                <div class="basic-info">
+                    <p><strong>From:</strong> {{ headers['From'] }}</p>
+                    <p><strong>To:</strong> {{ headers['To'] }}</p>
+                    <p><strong>Reply-To:</strong> {{ headers['Reply-To'] }}</p>
+                    <p><strong>Return-Path:</strong> {{ headers['Return-Path'] }}</p>
+                    <p><strong>Subject:</strong> {{ headers['Subject'] }}</p>
+                    <p><strong>Date:</strong> {{ headers['Date'] }}</p>
+                    <p><strong>Message-ID:</strong> {{ headers['Message-ID'] }}</p>
+                </div>
+
+                <h2>Received Headers</h2>
+                <div class="received-headers">
+                    <ul class="list-group">
+                        {% for received in headers['Received'] %}
+                        <li class="list-group-item">{{ received }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <h2>Extracted IPs</h2>
+                <div class="extracted-ips">
+                    <ul class="list-group">
+                        {% for ip in ips %}
+                        <li class="list-group-item">{{ ip }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <h2>Additional Headers</h2>
+                <div class="additional-headers">
+                    <p><strong>Received-SPF:</strong> {{ headers['Received-SPF'] }}</p>
+                    <p><strong>DKIM-Signature:</strong> {{ headers['DKIM-Signature'] }}</p>
+                    <p><strong>Authentication-Results:</strong> {{ headers['Authentication-Results'] }}</p>
+                    <p><strong>DMARC Results:</strong> {{ headers['DMARC-Results'] }}</p>
+                    <p><strong>MIME-Version:</strong> {{ headers['MIME-Version'] }}</p>
+                    <p><strong>Content-Type:</strong> {{ headers['Content-Type'] }}</p>
+                    <p><strong>X-Mailer:</strong> {{ headers['X-Mailer'] }}</p>
+                    <p><strong>X-Headers:</strong></p>
+                    <ul class="list-group">
+                        {% for key, value in headers['X-Headers'].items() %}
+                        <li class="list-group-item"><strong>{{ key }}:</strong> {{ value }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                {% if attachments %}
+                <h2>Attachments</h2>
+                <div class="attachments">
+                    <ul class="list-group">
+                        {% for attachment in attachments %}
+                        <li class="list-group-item">
+                            <strong>Filename:</strong> {{ attachment.filename }}<br>
+                            <strong>Content Type:</strong> {{ attachment.content_type }}<br>
+                            <strong>Size in bytes:</strong> {{ attachment.size }}<br>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <h2>Email Path Visualization</h2>
+                <div class="email-path">
+                    <img src="data:image/png;base64,{{ img_data }}" alt="Email Path Visualization" class="img-fluid">
+                </div>
+
+                <div class="buttons">
+                    <form action="{{ url_for('download_pdf') }}" method="POST" target="_blank">
+                        <input type="hidden" name="headers" value="{{ headers }}">
+                        <input type="hidden" name="ips" value="{{ ips }}">
+                        <input type="hidden" name="img_data" value="{{ img_data }}">
+                        <input type="hidden" name="spoofing_detected" value="{{ spoofing_detected }}">
+                        <input type="hidden" name="attachments" value="{{ attachments }}">
+                        <button type="submit" class="btn btn-primary btn-block mt-3">Download PDF</button>
+                    </form>
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary btn-block mt-3">Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

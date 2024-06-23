@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Sherlock</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #007bff;
+        }
+        label {
+            font-weight: bold;
+            color: #333;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+        }
+        input[type="file"] {
+            margin: 10px 0;
+        }
+        .analyze-btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            width: 100%; /* Full width button */
+        }
+        .analyze-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Email Sherlock</h1>
+        <form action="/" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file">Upload an email file:</label>
+                <input type="file" class="form-control-file" name="file" id="file">
+            </div>
+            <div class="form-group">
+                <label for="header_text">Or paste email headers here:</label>
+                <textarea class="form-control" name="header_text" id="header_text" placeholder="Paste email headers here..." rows="8"></textarea>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary analyze-btn">Analyze</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
