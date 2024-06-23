@@ -1,0 +1,6 @@
+Flask==2.0.3
+ipwhois==1.2.0
+matplotlib==3.4.3
+reportlab==3.6.1
+virustotal-python==0.1.0
+requests==2.26.0
