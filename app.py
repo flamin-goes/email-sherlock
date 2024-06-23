@@ -232,29 +232,37 @@ def check_spoofing(headers):
         })
 
     if from_header and return_path:
+        # Extract the domain from the From header
+        from_domain = re.search(r'@([\w.-]+)', from_header)
+        from_domain = from_domain.group(1) if from_domain else None
+
+        # Extract the domain from the Return-Path header
+        return_path_domain = re.search(r'@([\w.-]+)', return_path)
+        return_path_domain = return_path_domain.group(1) if return_path_domain else None
+
+        # Check against common bounce patterns before flagging a mismatch
         common_provider_patterns = [
             r'.*\.bounces\.google\.com$',  # Google bounces
             r'.*\.mail\.yahoo\.com$',       # Yahoo bounces
             r'.*\.protection\.outlook\.com$', # Outlook bounces
-            # ... Add more patterns for other providers ...
+            r'.*\.amazonses\.com$',          # Amazon SES
+            r'.*\.sendgrid\.net$',           # SendGrid
+            r'.*\.mailgun\.org$',            # Mailgun
+            r'.*\.postmarkapp\.com$',        # Postmark
+            # ... Add more patterns for other providers as needed ...
         ]
 
-        # Check if From and Return-Path match *exactly*
-        if from_header == return_path:
-            # Likely a legitimate email 
-            pass # Skip adding the mismatch warning
-
-        else:
+        if from_domain and return_path_domain and from_domain.lower() != return_path_domain.lower():
             for pattern in common_provider_patterns:
                 if re.match(pattern, return_path):
-                    # Likely a legitimate email provider bounce address
-                    break  # Skip adding the mismatch warning
+                    # Likely a legitimate bounce address, skip mismatch warning
+                    break 
             else:
-                # No common pattern found, so the mismatch is potentially suspicious
+                # No common pattern found, so the mismatch is suspicious
                 spoofing_details.append({
-                    'check': 'From/Return-Path Mismatch',
-                    'result': f'From: {from_header}, Return-Path: {return_path}',
-                    'description': 'The "From" and "Return-Path" headers do not match, which can be suspicious.',
+                    'check': 'From/Return-Path Domain Mismatch',
+                    'result': f'From Domain: {from_domain}, Return-Path Domain: {return_path_domain}',
+                    'description': 'The "From" and "Return-Path" header domains do not match, which can be suspicious.',
                     'severity': 'medium'
                 })
 
