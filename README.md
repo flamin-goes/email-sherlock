@@ -63,20 +63,6 @@ Ensure you have the following installed:
 - `requirements.txt`: List of dependencies required to run the application.
 - `README.md`: This file, providing an overview and setup instructions.
 
-## Example Usage
-
-1. **Upload Email File:**
-
-    ![Upload Email File](screenshots/upload.png)
-
-2. **View Analysis Report:**
-
-    ![Analysis Report](screenshots/report.png)
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request or report any issues.
@@ -88,6 +74,3 @@ Contributions are welcome! Please feel free to submit a Pull Request or report a
 - [Flask](https://flask.palletsprojects.com/) for the web framework.
 - [Matplotlib](https://matplotlib.org/) for data visualization.
 
-## Contact
-
-If you have any questions or suggestions, please feel free to contact me at [your-email@example.com].
