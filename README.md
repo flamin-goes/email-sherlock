@@ -1,5 +1,4 @@
 # Email-Sherlock
-# Email Header Analyzer
 
 This Flask application allows users to upload email files or paste raw email headers for analysis. It provides a detailed report on email headers, attachments, IP addresses involved in the email path, and checks for possible email spoofing.
 
