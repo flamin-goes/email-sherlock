@@ -17,7 +17,7 @@ import time
 
 app = Flask(__name__)
 
-VT_API_KEY = '4ecc163949a29bf3484cba4aa532eba8687e81a29d96bf79901eb17e428857e3'
+VT_API_KEY = '4ecc163949a29bf3484cba4aa532eba8687e81a29d96bf79901eb17e428857e3' #INSERT YOU OWN VIRUS-TOTAL API HERE
 BASE_URL = 'https://www.virustotal.com/api/v3'
 
 def scan_file_virustotal(file_data, filename):
